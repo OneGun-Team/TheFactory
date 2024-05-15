@@ -6,20 +6,10 @@
 #include "GameFramework/Character.h"
 #include "FPSCharacter.generated.h"
 
-class UInputComponent;
-class USkeletalMeshComponent;
-class USceneComponent;
-class UCameraComponent;
-
-UCLASS(config=Game)
-class AFPSCharacter : public ACharacter
+UCLASS()
+class THEFACTORY_API AFPSCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	USkeletalMeshComponent* Mesh1p;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess="true"))
-	UCameraComponent* FirstPerosnCameraComponent;
 
 public:
 	// Sets default values for this character's properties
