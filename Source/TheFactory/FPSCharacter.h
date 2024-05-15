@@ -6,10 +6,24 @@
 #include "GameFramework/Character.h"
 #include "FPSCharacter.generated.h"
 
+class UCameraComponent;
+class UInputComponent;
+
 UCLASS()
 class THEFACTORY_API AFPSCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	USkeletalMeshComponent* Mesh1P;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess="true"))
+	UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	bool isRun;
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	float defaultWalkSpeed;
+
 
 public:
 	// Sets default values for this character's properties
@@ -25,5 +39,25 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	float BaseTurnRate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	float BaseLookUpRate;
+
+protected:
+	void MoveForward(float Val);
+	void MoveRight(float Val);
+
+	void OnRun();
+	void OnWalk();
+	void OnSit();
+
+	void TurnAtRate(float Rate);
+	void LookUpAtRate(float Rate);
+
+public :
+	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 };
