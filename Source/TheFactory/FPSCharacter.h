@@ -22,6 +22,8 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool isRun;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	bool isSit;
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
 
 
@@ -29,11 +31,13 @@ public:
 	// Sets default values for this character's properties
 	AFPSCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = MovementSpeedValue)
+	float runSpeed = 1200.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = MovementSpeedValue)
+	float walkForwardSpeed = 600.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = MovementSpeedValue)
+	float walkRightSpeed = 400.0f;
 
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -46,6 +50,9 @@ public:
 	float BaseLookUpRate;
 
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	void MoveForward(float Val);
 	void MoveRight(float Val);
 

@@ -60,6 +60,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AFPSCharacter::OnRun);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AFPSCharacter::OnWalk);
+	PlayerInputComponent->BindAction("Sit", IE_Pressed, this, &AFPSCharacter::OnSit);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
@@ -71,23 +72,42 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 }
 
 void AFPSCharacter::OnRun() {
+	//UE_LOG(LogTemp, Log, TEXT("isRun is true"));
 	isRun = true;
 }
 
-void AFPSCharacter::OnWalk()
-{
+void AFPSCharacter::OnWalk() {
 	//UE_LOG(LogTemp, Log, TEXT("isRun is false"));
 	isRun = false;
-	GetCharacterMovement()->MaxWalkSpeed = defaultWalkSpeed;
+}
+
+void AFPSCharacter::OnSit() {
+	isSit = !isSit;
+
+	if (isSit) {
+		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 24.f));
+		walkForwardSpeed = 400.0f;
+		runSpeed = 400.0f;
+	}
+	else {
+		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f));
+		walkForwardSpeed = 600.0f;
+		runSpeed = 1200.0f;
+	}
 }
 
 void AFPSCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		if (isRun)GetCharacterMovement()->MaxWalkSpeed *= 2;
-		UE_LOG(LogTemp, Log, TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);
+		if (isRun) {
+			GetCharacterMovement()->MaxWalkSpeed = runSpeed;
+		}
+		else {
+			GetCharacterMovement()->MaxWalkSpeed = walkForwardSpeed;
+		}
 		// add movement in that direction
+		UE_LOG(LogTemp, Log, TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
@@ -96,7 +116,7 @@ void AFPSCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
-		if (isRun)GetCharacterMovement()->MaxWalkSpeed = defaultWalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = walkRightSpeed;
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 	}
