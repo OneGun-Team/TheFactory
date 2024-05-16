@@ -86,8 +86,8 @@ void AFPSCharacter::OnSit() {
 
 	if (isSit) {
 		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 24.f));
-		walkForwardSpeed = 400.0f;
-		runSpeed = 400.0f;
+		walkForwardSpeed = 300.0f;
+		runSpeed = 300.0f;
 	}
 	else {
 		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f));
