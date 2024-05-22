@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "FPSGameModeBase.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
@@ -25,7 +26,6 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	bool isSit;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
-
 
 public:
 	// Sets default values for this character's properties
