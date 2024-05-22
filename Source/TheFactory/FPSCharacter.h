@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "FPSGameModeBase.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
@@ -25,7 +26,7 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	bool isSit;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
-
+	
 
 public:
 	// Sets default values for this character's properties
@@ -53,12 +54,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+	AFPSGameModeBase* MyMode;
+
 	void MoveForward(float Val);
 	void MoveRight(float Val);
 
 	void OnRun();
 	void OnWalk();
 	void OnSit();
+	void ToggleInventory();
+
 
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
@@ -67,4 +73,6 @@ public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+private:
+	int widgetMode = 0;
 };

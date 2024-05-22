@@ -17,7 +17,7 @@ public:
 	AItem();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Info")
-	void itemKey;
+	int itemKey;
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,6 +38,6 @@ public:
 	UFUNCTION()
 	void Picked();
 	UFUNCTION()
-	void Put()
+	void Put();
 
 };
