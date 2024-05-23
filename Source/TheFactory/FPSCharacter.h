@@ -19,6 +19,8 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	USkeletalMeshComponent* Mesh1P;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess="true"))
 	UCameraComponent* FirstPersonCameraComponent;
+	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+	USkeletalMesh* HandLight;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool isRun;
@@ -26,7 +28,8 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	bool isSit;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
-	
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	bool hasHandlight;
 
 public:
 	// Sets default values for this character's properties
@@ -63,7 +66,9 @@ protected:
 	void OnRun();
 	void OnWalk();
 	void OnSit();
+	void OnInteract();
 	void ToggleInventory();
+	void ToggleHandLight();
 
 
 	void TurnAtRate(float Rate);

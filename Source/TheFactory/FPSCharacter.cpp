@@ -73,6 +73,10 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPSCharacter::LookUpAtRate);
 }
 
+void AFPSCharacter::OnInteract() {
+
+}
+
 void AFPSCharacter::OnRun() {
 	//UE_LOG(LogTemp, Log, TEXT("isRun is true"));
 	isRun = true;
@@ -96,6 +100,10 @@ void AFPSCharacter::OnSit() {
 		walkForwardSpeed = 600.0f;
 		runSpeed = 1200.0f;
 	}
+}
+
+void AFPSCharacter::ToggleHandLight() {
+
 }
 
 void AFPSCharacter::MoveForward(float Value)
