@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -17,6 +18,7 @@ AFPSCharacter::AFPSCharacter()
 	
 	PrimaryActorTick.bCanEverTick = true;
 	isRun = false;
+	hasHandlight = false;
 
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -35,6 +37,7 @@ AFPSCharacter::AFPSCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 
 	MyMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +51,6 @@ void AFPSCharacter::BeginPlay()
 void AFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -91,19 +93,19 @@ void AFPSCharacter::OnSit() {
 	isSit = !isSit;
 
 	if (isSit) {
-		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 24.f));
+		//FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 24.f));
 		walkForwardSpeed = 300.0f;
 		runSpeed = 300.0f;
 	}
 	else {
-		FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f));
+		//FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f));
 		walkForwardSpeed = 600.0f;
 		runSpeed = 1200.0f;
 	}
 }
 
-void AFPSCharacter::ToggleHandLight() {
-
+void AFPSCharacter::ToggleHandLight(AHandLight* HandLight) {
+	HandLight->ToggleLight();
 }
 
 void AFPSCharacter::MoveForward(float Value)

@@ -33,10 +33,19 @@ void AHandLight::BeginPlay()
 void AHandLight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AHandLight::ToggleLight() {
+	switch (lightState)
+	{
+	case true:
+		lightState = false;
+		break;
+	case false:
+		lightState = true;
+		break;
+	}
 
+	SpotLight->SetVisibility(lightState);
 }
 

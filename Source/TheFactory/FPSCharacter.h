@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "FPSGameModeBase.h"
+#include "HandLight.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
 class UInputComponent;
+
 
 UCLASS()
 class THEFACTORY_API AFPSCharacter : public ACharacter
@@ -19,8 +21,7 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	USkeletalMeshComponent* Mesh1P;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess="true"))
 	UCameraComponent* FirstPersonCameraComponent;
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	USkeletalMesh* HandLight;
+
 
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool isRun;
@@ -28,8 +29,7 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	bool isSit;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
-	UPROPERTY(VisibleDefaultsOnly, Category = State)
-	bool hasHandlight;
+	
 
 public:
 	// Sets default values for this character's properties
@@ -53,6 +53,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = State)
+	bool hasHandlight;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -68,16 +71,19 @@ protected:
 	void OnSit();
 	void OnInteract();
 	void ToggleInventory();
-	void ToggleHandLight();
+	
 
 
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 
+	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
+	void ToggleHandLight(AHandLight* HandLight);
+
 public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	
 private:
 	int widgetMode = 0;
 };
