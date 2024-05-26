@@ -14,8 +14,7 @@ class THEFACTORY_API AHandLight : public AItem
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Mesh")
-	USkeletalMeshComponent* HandLightMesh;
+	
 public:	
 	// Sets default values for this actor's properties
 	AHandLight();
@@ -28,6 +27,8 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Light)
 	USpotLightComponent* SpotLight;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
+	UStaticMeshComponent* HandLightMesh;
 
 public:	
 	// Called every frame

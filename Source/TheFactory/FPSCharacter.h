@@ -53,8 +53,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = State)
-	bool hasHandlight;
+	
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,6 +64,8 @@ protected:
 
 	void MoveForward(float Val);
 	void MoveRight(float Val);
+	void TurnAtRate(float Rate);
+	void LookUpAtRate(float Rate);
 
 	void OnRun();
 	void OnWalk();
@@ -73,17 +74,18 @@ protected:
 	void ToggleInventory();
 	
 
-
-	void TurnAtRate(float Rate);
-	void LookUpAtRate(float Rate);
-
 	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
 	void ToggleHandLight(AHandLight* HandLight);
 
 public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = State)
+	bool hasHandlight;
 	
 private:
 	int widgetMode = 0;
+	FVector StandPos;
+	FVector SitPos;
+	bool cameraComponentPosChanged = true;
 };
