@@ -27,11 +27,14 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Light)
 	USpotLightComponent* SpotLight;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* HandLightMesh;
+	
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void ToggleLight();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
+	UStaticMeshComponent* HandLightMesh;
+	UFUNCTION(BlueprintCallable, Category = "ItemEvent")
+	void ChangeCustomDepth(bool OnOff);
 };

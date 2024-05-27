@@ -48,3 +48,6 @@ void AHandLight::ToggleLight() {
 	SpotLight->SetVisibility(lightState);
 }
 
+void AHandLight::ChangeCustomDepth(bool OnOff) {
+	HandLightMesh->SetRenderCustomDepth(OnOff);
+}
