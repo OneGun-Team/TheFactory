@@ -29,6 +29,8 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	bool isSit;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	float defaultWalkSpeed;
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	bool isOverlapItem;
 	
 
 public:
@@ -76,6 +78,20 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
 	void ToggleHandLight(AHandLight* HandLight);
+
+	UFUNCTION()
+	void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void EndOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
 
 public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }

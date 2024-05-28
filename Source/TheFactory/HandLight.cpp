@@ -6,12 +6,15 @@
 
 // Sets default values
 AHandLight::AHandLight()
-{
+{	
+	itemKey = 1;
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	HandLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandLightMesh"));
 	HandLightMesh->SetupAttachment(GetRootComponent());
+	HandLightMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	HandLightMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("HandLightSpotLight"));
 	SpotLight->SetupAttachment(HandLightMesh);

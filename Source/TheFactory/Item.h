@@ -32,12 +32,13 @@ public:
 	virtual void EndInteract() override;
 
 	UFUNCTION()
-	void Delete();
+	void Destroy();
 	UFUNCTION()
 	void Use();
 	UFUNCTION()
 	void Picked();
 	UFUNCTION()
 	void Put();
-
+	UFUNCTION()
+	int GetItemKey();
 };

@@ -35,9 +35,9 @@ void AItem::EndInteract()
 
 }
 
-void AItem::Delete()
+void AItem::Destroy()
 {
-
+	K2_DestroyActor();
 }
 void AItem::Use()
 {
@@ -50,4 +50,8 @@ void AItem::Picked()
 void AItem::Put()
 {
 
+}
+
+int AItem::GetItemKey() {
+	return itemKey;
 }

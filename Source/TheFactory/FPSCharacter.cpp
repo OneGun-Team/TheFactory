@@ -10,6 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Item.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -20,6 +22,8 @@ AFPSCharacter::AFPSCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	isRun = false;
 	hasHandlight = false;
+	isOverlapItem = false;
+
 	SitPos = FVector(-39.56f, 1.75f, 24.f);
 	StandPos = FVector(-39.56f, 1.75f, 64.f);
 
@@ -41,6 +45,8 @@ AFPSCharacter::AFPSCharacter()
 
 	MyMode = Cast<AFPSGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
+	Cast<UCapsuleComponent>(GetCapsuleComponent())->OnComponentBeginOverlap.AddDynamic(this, &AFPSCharacter::BeginOverlap);
+	Cast<UCapsuleComponent>(GetCapsuleComponent())->OnComponentEndOverlap.AddDynamic(this, &AFPSCharacter::EndOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -65,14 +71,14 @@ void AFPSCharacter::Tick(float DeltaTime)
 				cameraComponentPosChanged = true;
 				break;
 			}
-			FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(currCameraPos, SitPos, 0.05f));
+			FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(currCameraPos, SitPos, 0.1f));
 			break;
 		case false:
 			if (currCameraPos.Equals(StandPos)) {
 				cameraComponentPosChanged = true;
 				break;
 			}
-			FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(currCameraPos, StandPos, 0.1f));
+			FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(currCameraPos, StandPos, 0.2f));
 			break;
 		}
 	}
@@ -90,6 +96,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AFPSCharacter::OnWalk);
 	PlayerInputComponent->BindAction("Sit", IE_Pressed, this, &AFPSCharacter::OnSit);
 	PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AFPSCharacter::ToggleInventory);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AFPSCharacter::OnInteract);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
@@ -101,7 +108,29 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 }
 
 void AFPSCharacter::OnInteract() {
+	if (isOverlapItem) {
+		//UE_LOG(LogTemp, Log, TEXT("overlap Interact"));
+		FHitResult HitResult;
 
+		FVector StartTrace = FirstPersonCameraComponent->GetComponentLocation();
+		FVector EndTrace = StartTrace + (FirstPersonCameraComponent->GetForwardVector() * 1000);
+		FCollisionQueryParams traceParams;
+
+		GetWorld()->LineTraceSingleByChannel(HitResult,StartTrace,EndTrace,ECC_Visibility,traceParams);
+		//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 2.0f);
+		
+		if (HitResult.GetActor() != nullptr) {
+			//UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
+			AItem* item = Cast<AItem>(HitResult.GetActor());
+			
+			// 손전등인 경우
+			if (item->GetItemKey() == 1) {
+				hasHandlight = true;
+				item->Destroy();
+			}
+		}
+			
+	}
 }
 
 // 달리기 상태 변경 pressed left Shift
@@ -148,7 +177,7 @@ void AFPSCharacter::MoveForward(float Value)
 			GetCharacterMovement()->MaxWalkSpeed = walkForwardSpeed;
 		}
 		// add movement in that direction
-		UE_LOG(LogTemp, Log, TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);
+		//UE_LOG(LogTemp, Log, TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
@@ -179,4 +208,19 @@ void AFPSCharacter::LookUpAtRate(float Rate)
 void AFPSCharacter::ToggleInventory() {
 	widgetMode = widgetMode == 0 ? 1 : 0;
 	MyMode->ChangeFPSWidget(widgetMode);
+}
+
+// 겹치기 시작했을 때 이벤트
+void AFPSCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (OtherComp->ComponentHasTag(FName("ItemArea"))) {
+		//UE_LOG(LogTemp, Log, TEXT("Begin OverlapItem"));
+		isOverlapItem = true;
+	}
+}
+
+void AFPSCharacter::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (OtherComp->ComponentHasTag(FName("ItemArea"))) {
+		//UE_LOG(LogTemp, Log, TEXT("End OverlapItem"));
+		isOverlapItem = false;
+	}
 }
