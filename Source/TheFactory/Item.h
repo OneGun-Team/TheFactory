@@ -39,6 +39,8 @@ public:
 	void Picked();
 	UFUNCTION()
 	void Put();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable,Category="itemKey")
 	int GetItemKey();
+	UFUNCTION(BlueprintCallable, Category = "itemKey")
+	void SetItemKey(int inputItemKey);
 };

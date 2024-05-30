@@ -8,7 +8,7 @@ AItem::AItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	itemKey = -1;
 }
 
 // Called when the game starts or when spawned
@@ -54,4 +54,8 @@ void AItem::Put()
 
 int AItem::GetItemKey() {
 	return itemKey;
+}
+
+void AItem::SetItemKey(int inputItemKey) {
+	itemKey = inputItemKey;
 }
