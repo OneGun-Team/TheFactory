@@ -3,6 +3,8 @@
 
 #include "HandLight.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AHandLight::AHandLight()
@@ -11,13 +13,11 @@ AHandLight::AHandLight()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	HandLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandLightMesh"));
-	HandLightMesh->SetupAttachment(GetRootComponent());
-	HandLightMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	HandLightMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-
+	collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collsion"));
+	RootComponent = collision;
+	
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("HandLightSpotLight"));
-	SpotLight->SetupAttachment(HandLightMesh);
+	SpotLight->SetupAttachment(collision);
 	
 	
 }
@@ -49,8 +49,4 @@ void AHandLight::ToggleLight() {
 	}
 
 	SpotLight->SetVisibility(lightState);
-}
-
-void AHandLight::ChangeCustomDepth(bool OnOff) {
-	HandLightMesh->SetRenderCustomDepth(OnOff);
 }
