@@ -122,7 +122,7 @@ void AFPSCharacter::OnInteract() {
 		//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 2.0f);
 		
 		if (HitResult.GetActor() != nullptr) {
-			//UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
+			UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
 			AItem* item = Cast<AItem>(HitResult.GetActor());
 			
 			// 손전등인 경우
@@ -140,7 +140,20 @@ void AFPSCharacter::OnInteract() {
 
 void AFPSCharacter::PutHandLight() {
 	if (hasHandlight) {
-		
+		if (HandLightActor) {
+			FVector spawnLocation = GetActorLocation()+(GetActorForwardVector()*10);
+			FRotator spawnRotation = GetActorRotation();
+
+			UWorld* world = GetWorld();
+			if (world) {
+				FActorSpawnParameters spawnParams;
+				spawnParams.Owner = this;
+				spawnParams.Instigator = GetInstigator();
+
+				world->SpawnActor<AItem>(HandLightActor, spawnLocation, spawnRotation, spawnParams);
+				hasHandlight = false;
+			}
+		}
 	}
 }
 

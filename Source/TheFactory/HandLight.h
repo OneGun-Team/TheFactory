@@ -8,6 +8,7 @@
 #include "HandLight.generated.h"
 
 class USpotLightComponent;
+class UCapsuleComponent;
 
 UCLASS()
 class THEFACTORY_API AHandLight : public AItem
@@ -25,6 +26,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool lightState;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision)
+	UCapsuleComponent* collision;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Light)
 	USpotLightComponent* SpotLight;
 	
@@ -33,8 +37,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void ToggleLight();
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
-	UStaticMeshComponent* HandLightMesh;
-	UFUNCTION(BlueprintCallable, Category = "ItemEvent")
-	void ChangeCustomDepth(bool OnOff);
+
 };
