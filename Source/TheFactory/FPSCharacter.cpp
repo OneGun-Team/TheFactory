@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Item.h"
+#include "HandLight.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -97,6 +98,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Sit", IE_Pressed, this, &AFPSCharacter::OnSit);
 	PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AFPSCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AFPSCharacter::OnInteract);
+	PlayerInputComponent->BindAction("PutHandLight", IE_Pressed, this, &AFPSCharacter::PutHandLight);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
@@ -128,8 +130,17 @@ void AFPSCharacter::OnInteract() {
 				hasHandlight = true;
 				item->Destroy();
 			}
+			else {
+
+			}
 		}
 			
+	}
+}
+
+void AFPSCharacter::PutHandLight() {
+	if (hasHandlight) {
+		
 	}
 }
 

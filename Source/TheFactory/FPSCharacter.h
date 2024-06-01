@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "FPSGameModeBase.h"
-#include "HandLight.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
@@ -73,7 +72,9 @@ protected:
 	void OnWalk();
 	void OnSit();
 	void OnInteract();
+	void PutHandLight();
 	void ToggleInventory();
+	
 	
 
 	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
@@ -98,6 +99,8 @@ public :
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = State)
 	bool hasHandlight;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "itemBP")
+	TSubclassOf<class AItem> HandLightActor;
 	
 private:
 	int widgetMode = 0;
