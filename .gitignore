@@ -73,12 +73,8 @@ Plugins/*/Intermediate/*
 
 #Content의 무거운 자료는 구글 드라이브!
 
-Content/Materials
-Content/Meshes
-Content/Textures
-Content/Audio
-Content/FX
-Content/Font
+Content/*
+!Content/Blueprints
 #Content 바다 머트리얼은 그냥 올림 - 너무 크면 제외 예정
 #Content/WaterMaterials
 
