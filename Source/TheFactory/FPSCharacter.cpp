@@ -131,7 +131,7 @@ void AFPSCharacter::OnInteract() {
 				item->Destroy();
 			}
 			else {
-
+				item->
 			}
 		}
 			
