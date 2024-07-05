@@ -187,6 +187,7 @@ void AFPSCharacter::OnSit() {
 
 // 손전등 껐다 켰다를 위한 함수 for Blueprint
 void AFPSCharacter::ToggleHandLight(AHandLight* HandLight) {
+	UE_LOG(LogTemp, Log, TEXT("Call ToggleFunction"));
 	HandLight->ToggleLight();
 }
 
