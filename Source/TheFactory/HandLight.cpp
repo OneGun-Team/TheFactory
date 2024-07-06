@@ -50,3 +50,7 @@ void AHandLight::ToggleLight() {
 
 	SpotLight->SetVisibility(lightState);
 }
+
+void AHandLight::StartInteract() {
+	this->Destroy();
+}

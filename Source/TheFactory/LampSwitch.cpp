@@ -27,7 +27,7 @@ void ALampSwitch::Tick(float DeltaTime)
 
 }
 
-void ALampSwitch::ToggleLight() {
+void ALampSwitch::StartInteract() {
 	switch (lightState)
 	{
 	case true:

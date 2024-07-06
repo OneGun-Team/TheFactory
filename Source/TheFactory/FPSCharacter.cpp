@@ -124,14 +124,13 @@ void AFPSCharacter::OnInteract() {
 		if (HitResult.GetActor() != nullptr) {
 			UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
 			AItem* item = Cast<AItem>(HitResult.GetActor());
-			
+			item->StartInteract();
 			// 손전등인 경우
 			if (item->GetItemKey() == 1) {
 				hasHandlight = true;
-				item->Destroy();
 			}
 			else {
-				item->
+
 			}
 		}
 			

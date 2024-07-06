@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Item.h"
 #include "LampSwitch.generated.h"
 
 
 UCLASS()
-class THEFACTORY_API ALampSwitch : public AActor
+class THEFACTORY_API ALampSwitch : public AItem
 {
 	GENERATED_BODY()
 	
@@ -27,5 +28,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void ToggleLight();
+	virtual void StartInteract() override;
 };
