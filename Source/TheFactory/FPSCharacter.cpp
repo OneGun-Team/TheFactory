@@ -122,15 +122,17 @@ void AFPSCharacter::OnInteract() {
 		//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 2.0f);
 		
 		if (HitResult.GetActor() != nullptr) {
-			UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
+			//UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
 			AItem* item = Cast<AItem>(HitResult.GetActor());
-			item->StartInteract();
-			// 손전등인 경우
-			if (item->GetItemKey() == 1) {
-				hasHandlight = true;
-			}
-			else {
+			if (item != nullptr) {
+				item->StartInteract();
+				// 손전등인 경우
+				if (item->GetItemKey() == 1) {
+					hasHandlight = true;
+				}
+				else {
 
+				}
 			}
 		}
 			
@@ -247,4 +249,8 @@ void AFPSCharacter::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		//UE_LOG(LogTemp, Log, TEXT("End OverlapItem"));
 		isOverlapItem = false;
 	}
+}
+
+bool AFPSCharacter::getHasHandLight() {
+	return hasHandlight;
 }

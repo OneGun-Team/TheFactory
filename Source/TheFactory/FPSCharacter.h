@@ -101,6 +101,8 @@ public :
 	bool hasHandlight;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "itemBP")
 	TSubclassOf<class AItem> HandLightActor;
+	UFUNCTION(BlueprintCallable, Category="state")
+	bool getHasHandLight();
 	
 private:
 	int widgetMode = 0;

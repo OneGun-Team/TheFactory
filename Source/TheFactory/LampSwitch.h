@@ -22,8 +22,9 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool lightState;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Light)
-	ULightComponent* cellingLight;
+	UPROPERTY(EditAnywhere, Category = Light)
+	AActor* cellingLightGroup;
+	TArray<class AActor*> cellingLightArray;
 
 public:	
 	// Called every frame
