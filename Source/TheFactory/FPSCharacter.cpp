@@ -48,6 +48,8 @@ AFPSCharacter::AFPSCharacter()
 
 	Cast<UCapsuleComponent>(GetCapsuleComponent())->OnComponentBeginOverlap.AddDynamic(this, &AFPSCharacter::BeginOverlap);
 	Cast<UCapsuleComponent>(GetCapsuleComponent())->OnComponentEndOverlap.AddDynamic(this, &AFPSCharacter::EndOverlap);
+
+	inventoryArr.Init(0, 3);
 }
 
 // Called when the game starts or when spawned
@@ -92,13 +94,18 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AFPSCharacter::OnRun);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AFPSCharacter::OnWalk);
 	PlayerInputComponent->BindAction("Sit", IE_Pressed, this, &AFPSCharacter::OnSit);
+	
 	PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AFPSCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AFPSCharacter::OnInteract);
 	PlayerInputComponent->BindAction("PutHandLight", IE_Pressed, this, &AFPSCharacter::PutHandLight);
+
+	PlayerInputComponent->BindAction("NextItem", IE_Pressed, this,&AFPSCharacter::SetNextCurrPos);
+	PlayerInputComponent->BindAction("firstItem", IE_Pressed, this, &AFPSCharacter::SetFirstCurrPos);
+	PlayerInputComponent->BindAction("secondItem", IE_Pressed, this, &AFPSCharacter::SetSecondCurrPos);
+	PlayerInputComponent->BindAction("thirdItem", IE_Pressed, this, &AFPSCharacter::SetThirdCurrPos);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
@@ -125,14 +132,19 @@ void AFPSCharacter::OnInteract() {
 			//UE_LOG(LogTemp, Log, TEXT("%s"), *HitResult.GetActor()->GetName());
 			AItem* item = Cast<AItem>(HitResult.GetActor());
 			if (item != nullptr) {
-				item->StartInteract();
 				// 손전등인 경우
 				if (item->GetItemKey() == 1) {
+					if (hasHandlight) return;
 					hasHandlight = true;
 				}
-				else {
+				else if(item->GetItemKey() != -1){
+					if (inventoryArr[MAX_ITEM_CNT-1] != 0) return;
+					inventoryArr[lastEmptyInventoryPos++] = item->GetItemKey();
 
+					UE_LOG(LogTemp, Log, TEXT("itemKey : %d, currSelect : %d, lastEmpty : %d"), item->GetItemKey(), currSelectInventoryPos, lastEmptyInventoryPos);
 				}
+				item->StartInteract();
+				
 			}
 		}
 			
@@ -251,6 +263,48 @@ void AFPSCharacter::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	}
 }
 
+void AFPSCharacter::SetNextCurrPos() {
+	currSelectInventoryPos += 1;
+	if (currSelectInventoryPos > 2) currSelectInventoryPos = 0;
+}
+
+void AFPSCharacter::SetFirstCurrPos() {
+	currSelectInventoryPos = 0;
+}
+
+void AFPSCharacter::SetSecondCurrPos() {
+	currSelectInventoryPos = 1;
+}
+
+void AFPSCharacter::SetThirdCurrPos() {
+	currSelectInventoryPos = 2;
+}
+
+
 bool AFPSCharacter::getHasHandLight() {
 	return hasHandlight;
+}
+
+int AFPSCharacter::getInventoryItem(int pos) {
+	//UE_LOG(LogTemp, Log, TEXT("%d"),pos);
+	return inventoryArr[pos];
+}
+
+int AFPSCharacter::getCurrSelectInventoryPos() {
+	
+	return currSelectInventoryPos;
+}
+
+
+UTexture2D* AFPSCharacter::LoadTextureFromPath(const FString& Path) {
+	UTexture2D* sprite = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Path));
+	if (sprite != nullptr) {
+		FString name = "";
+		sprite->GetName(name);
+		UE_LOG(LogTemp, Log, TEXT("Texture : %s"), *name);
+	}
+	else {
+		//UE_LOG(LogTemp, Log, TEXT("not found"));
+	}
+	return sprite;
 }

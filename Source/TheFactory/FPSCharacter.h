@@ -74,7 +74,11 @@ protected:
 	void OnInteract();
 	void PutHandLight();
 	void ToggleInventory();
-	
+
+	void SetNextCurrPos();
+	void SetFirstCurrPos();
+	void SetSecondCurrPos();
+	void SetThirdCurrPos();
 	
 
 	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
@@ -94,6 +98,9 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	TArray<int> inventoryArr;
+	int MAX_ITEM_CNT = 3;
+
 public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
@@ -101,12 +108,23 @@ public :
 	bool hasHandlight;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "itemBP")
 	TSubclassOf<class AItem> HandLightActor;
+
 	UFUNCTION(BlueprintCallable, Category="state")
 	bool getHasHandLight();
+	UFUNCTION(BlueprintCallable, Category="state")
+	int getInventoryItem(int pos);
+	UFUNCTION(BlueprintCallable, Category="state")
+	int getCurrSelectInventoryPos();
+
+
+	UFUNCTION(BlueprintCallable, Category="Texture")
+	UTexture2D* LoadTextureFromPath(const FString& Path);
 	
 private:
 	int widgetMode = 0;
 	FVector StandPos;
 	FVector SitPos;
 	bool cameraComponentPosChanged = true;
+	int lastEmptyInventoryPos = 0;
+	int currSelectInventoryPos = 0;
 };

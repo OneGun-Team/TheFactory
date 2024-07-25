@@ -8,7 +8,6 @@ AItem::AItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	itemKey = -1;
 }
 
 // Called when the game starts or when spawned
@@ -27,7 +26,7 @@ void AItem::Tick(float DeltaTime)
 
 void AItem::StartInteract()
 {
-
+	this->Destroy();
 }
 
 void AItem::EndInteract()

@@ -16,8 +16,8 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Info")
-	int itemKey;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
+	int itemKey = -1;
 
 protected:
 	// Called when the game starts or when spawned
