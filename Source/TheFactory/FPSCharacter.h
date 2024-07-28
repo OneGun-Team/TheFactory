@@ -79,6 +79,7 @@ protected:
 	void SetFirstCurrPos();
 	void SetSecondCurrPos();
 	void SetThirdCurrPos();
+	void PutItem();
 	
 
 	UFUNCTION(BlueprintCallable, Category="PlayerEvent")
@@ -125,6 +126,9 @@ private:
 	FVector StandPos;
 	FVector SitPos;
 	bool cameraComponentPosChanged = true;
-	int lastEmptyInventoryPos = 0;
 	int currSelectInventoryPos = 0;
+
+	FString FolderPath = TEXT("/Game/Blueprints/Item/UsableItem");
+	void LoadActorsFromPath();
+	TArray<UClass*> itemList;
 };

@@ -13,6 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Item.h"
 #include "HandLight.h"
+#include "AssetRegistryModule.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -50,6 +51,7 @@ AFPSCharacter::AFPSCharacter()
 	Cast<UCapsuleComponent>(GetCapsuleComponent())->OnComponentEndOverlap.AddDynamic(this, &AFPSCharacter::EndOverlap);
 
 	inventoryArr.Init(0, 3);
+	LoadActorsFromPath();
 }
 
 // Called when the game starts or when spawned
@@ -106,6 +108,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("firstItem", IE_Pressed, this, &AFPSCharacter::SetFirstCurrPos);
 	PlayerInputComponent->BindAction("secondItem", IE_Pressed, this, &AFPSCharacter::SetSecondCurrPos);
 	PlayerInputComponent->BindAction("thirdItem", IE_Pressed, this, &AFPSCharacter::SetThirdCurrPos);
+	PlayerInputComponent->BindAction("PutItem", IE_Pressed, this, &AFPSCharacter::PutItem);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
@@ -139,9 +142,14 @@ void AFPSCharacter::OnInteract() {
 				}
 				else if(item->GetItemKey() != -1){
 					if (inventoryArr[MAX_ITEM_CNT-1] != 0) return;
-					inventoryArr[lastEmptyInventoryPos++] = item->GetItemKey();
+					for (int i = 0; i < inventoryArr.Num(); i++) {
+						if (inventoryArr[i] == 0) {
+							inventoryArr[i] = item->GetItemKey();
+							break;
+						}
+					}
 
-					UE_LOG(LogTemp, Log, TEXT("itemKey : %d, currSelect : %d, lastEmpty : %d"), item->GetItemKey(), currSelectInventoryPos, lastEmptyInventoryPos);
+					//UE_LOG(LogTemp, Log, TEXT("itemKey : %d, currSelect : %d, lastEmpty : %d"), item->GetItemKey(), currSelectInventoryPos, lastEmptyInventoryPos);
 				}
 				item->StartInteract();
 				
@@ -280,6 +288,41 @@ void AFPSCharacter::SetThirdCurrPos() {
 	currSelectInventoryPos = 2;
 }
 
+void AFPSCharacter::PutItem() {
+	struct GetItemParam {
+		int returnValue;
+	};
+
+	if (itemList.Num() != 0) {
+		for (UClass *item : itemList) {
+			if (!item->IsChildOf<AItem>()) { continue; }
+			
+			UObject* itemObject = item->GetDefaultObject();
+			AItem* castingItem = Cast<AItem>(itemObject);
+			int itemKey = castingItem->GetItemKey();
+
+			
+
+			if (itemKey == 0) { continue; }
+			if (inventoryArr[currSelectInventoryPos] == itemKey) {
+				FVector spawnLocation = GetActorLocation() + (GetActorForwardVector() * 10);
+				FRotator spawnRotation = GetActorRotation();
+
+				UWorld* world = GetWorld();
+				if (world) {
+					FActorSpawnParameters spawnParams;
+					spawnParams.Owner = this;
+					spawnParams.Instigator = GetInstigator();
+
+					world->SpawnActor<AItem>(item, spawnLocation, spawnRotation, spawnParams);
+					hasHandlight = false;
+				}
+				inventoryArr[currSelectInventoryPos] = 0;
+			}
+		}
+	}
+}
+
 
 bool AFPSCharacter::getHasHandLight() {
 	return hasHandlight;
@@ -301,10 +344,39 @@ UTexture2D* AFPSCharacter::LoadTextureFromPath(const FString& Path) {
 	if (sprite != nullptr) {
 		FString name = "";
 		sprite->GetName(name);
-		UE_LOG(LogTemp, Log, TEXT("Texture : %s"), *name);
+		//UE_LOG(LogTemp, Log, TEXT("Texture : %s"), *name);
 	}
 	else {
 		//UE_LOG(LogTemp, Log, TEXT("not found"));
 	}
 	return sprite;
+}
+
+void AFPSCharacter::LoadActorsFromPath() {
+	if (FolderPath.IsEmpty()) {
+		//UE_LOG(LogTemp, Log, TEXT("null"));
+		return;
+	}
+
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	IAssetRegistry& AssetRegistry = AssetRegistryModule.Get();
+
+	TArray<FAssetData> DataList;
+	FARFilter Filter;
+	Filter.PackagePaths.Add(*FolderPath);
+	Filter.bRecursivePaths = true;
+	Filter.ClassNames.Add(UBlueprint::StaticClass()->GetFName());
+
+	AssetRegistry.GetAssets(Filter, DataList);
+
+	for (const FAssetData& AssetData : DataList) {
+		UBlueprint* Blueprint = Cast<UBlueprint>(AssetData.GetAsset());
+		FString name = "";
+		Blueprint->GetName(name);
+		
+		if (Blueprint && Blueprint->GeneratedClass) {
+			UClass* ActorClass = Blueprint->GeneratedClass;
+			itemList.Add(ActorClass);
+		}
+	}
 }

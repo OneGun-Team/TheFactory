@@ -52,6 +52,7 @@ void AItem::Put()
 }
 
 int AItem::GetItemKey() {
+	UE_LOG(LogTemp, Log, TEXT("Get Item Key : %d"), itemKey);
 	return itemKey;
 }
 
