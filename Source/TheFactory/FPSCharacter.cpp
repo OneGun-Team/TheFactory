@@ -141,14 +141,14 @@ void AFPSCharacter::OnInteract() {
 					hasHandlight = true;
 				}
 				else if(item->GetItemKey() != -1){
-					if (inventoryArr[MAX_ITEM_CNT-1] != 0) return;
+					//if (inventoryArr[MAX_ITEM_CNT-1] != 0) return;
 					for (int i = 0; i < inventoryArr.Num(); i++) {
 						if (inventoryArr[i] == 0) {
 							inventoryArr[i] = item->GetItemKey();
 							break;
 						}
 					}
-
+					UE_LOG(LogTemp, Log, TEXT("%d, %d, %d"), inventoryArr[0], inventoryArr[1], inventoryArr[2]);
 					//UE_LOG(LogTemp, Log, TEXT("itemKey : %d, currSelect : %d, lastEmpty : %d"), item->GetItemKey(), currSelectInventoryPos, lastEmptyInventoryPos);
 				}
 				item->StartInteract();
@@ -318,6 +318,7 @@ void AFPSCharacter::PutItem() {
 					hasHandlight = false;
 				}
 				inventoryArr[currSelectInventoryPos] = 0;
+				UE_LOG(LogTemp, Log, TEXT("%d, %d, %d"), inventoryArr[0], inventoryArr[1], inventoryArr[2]);
 			}
 		}
 	}
