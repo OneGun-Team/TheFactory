@@ -93,8 +93,8 @@ void AFPSCharacter::Tick(float DeltaTime)
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-	
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AFPSCharacter::OnRun);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AFPSCharacter::OnWalk);
@@ -178,6 +178,12 @@ void AFPSCharacter::PutHandLight() {
 	}
 }
 
+void AFPSCharacter::Jump(){
+	if (!chairSit) {
+		Super::Jump();
+	}
+}
+
 // 달리기 상태 변경 pressed left Shift
 void AFPSCharacter::OnRun() {
 	//UE_LOG(LogTemp, Log, TEXT("isRun is true"));
@@ -192,6 +198,9 @@ void AFPSCharacter::OnWalk() {
 
 // 앉기 상태/ 서있는 상태로 변경 pressed C 
 void AFPSCharacter::OnSit() {
+	if (chairSit && currStandPos != nullptr) {
+			CallTranslate(currStandPos, nullptr, false);
+	}
 	isSit = !isSit;
 	cameraComponentPosChanged = false;
 	if (isSit) {
@@ -214,7 +223,7 @@ void AFPSCharacter::ToggleHandLight(AHandLight* HandLight) {
 
 void AFPSCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !chairSit)
 	{
 		if (isRun) {
 			GetCharacterMovement()->MaxWalkSpeed = runSpeed;
@@ -230,7 +239,7 @@ void AFPSCharacter::MoveForward(float Value)
 
 void AFPSCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !chairSit)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = walkRightSpeed;
 		// add movement in that direction
@@ -240,8 +249,10 @@ void AFPSCharacter::MoveRight(float Value)
 
 void AFPSCharacter::TurnAtRate(float Rate)
 {
+	float newYaw = GetControlRotation().Yaw + (Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(newYaw - GetControlRotation().Yaw);
 }
 
 void AFPSCharacter::LookUpAtRate(float Rate)
@@ -380,4 +391,36 @@ void AFPSCharacter::LoadActorsFromPath() {
 			itemList.Add(ActorClass);
 		}
 	}
+}
+
+void AFPSCharacter::CallTranslate(USceneComponent* currPos,USceneComponent* nextPos, bool state) {
+	APlayerController* controller = Cast<APlayerController>(GetController());
+	if (controller == nullptr)return;
+
+	FVector location = currPos->GetComponentLocation();
+	//UE_LOG(LogTemp, Log, TEXT("%f, %f, %f"), location.X, location.Y, location.Z);
+	SetActorLocation(location);
+	chairSit = state;
+	OnSit();
+	
+	
+	FRotator rotation = currPos->GetComponentRotation();
+	APlayerCameraManager* camManager = controller->PlayerCameraManager;
+	currStandPos = nextPos;
+	
+	switch (chairSit)
+	{
+	case true:
+		
+		camManager->ViewYawMax = rotation.Yaw+90.0f;
+		camManager->ViewYawMin = rotation.Yaw-90.0f;
+		break;
+	case false:
+		
+		camManager->ViewYawMax = 179.999954f;
+		camManager->ViewYawMin = -179.999954f;
+		break;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("%s"), chairSit ? "true":"false");
 }

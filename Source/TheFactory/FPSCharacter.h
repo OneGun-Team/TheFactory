@@ -30,7 +30,8 @@ class THEFACTORY_API AFPSCharacter : public ACharacter
 	float defaultWalkSpeed;
 	UPROPERTY(VisibleDefaultsOnly, Category = State)
 	bool isOverlapItem;
-	
+	UPROPERTY(VisibleDefaultsOnly, Category = State)
+	bool chairSit = false;
 
 public:
 	// Sets default values for this character's properties
@@ -68,6 +69,8 @@ protected:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 
+	
+	virtual void Jump();
 	void OnRun();
 	void OnWalk();
 	void OnSit();
@@ -120,13 +123,16 @@ public :
 
 	UFUNCTION(BlueprintCallable, Category="Texture")
 	UTexture2D* LoadTextureFromPath(const FString& Path);
-	
+
+	void CallTranslate(USceneComponent* currPos, USceneComponent* nextPos, bool chairSit);
+	USceneComponent* currStandPos;
 private:
 	int widgetMode = 0;
 	FVector StandPos;
 	FVector SitPos;
 	bool cameraComponentPosChanged = true;
 	int currSelectInventoryPos = 0;
+	
 
 	FString FolderPath = TEXT("/Game/Blueprints/Item/UsableItem");
 	void LoadActorsFromPath();
