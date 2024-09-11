@@ -31,6 +31,9 @@ public:
 	// Sets default values for this character's properties
 	AFPSCharacter();
 
+	void Attack();
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = MovementSpeedValue)
 	float runSpeed = 1200.0f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = MovementSpeedValue)
@@ -62,6 +65,9 @@ protected:
 
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
+
+
+	
 
 public :
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
